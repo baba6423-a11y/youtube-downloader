@@ -1,0 +1,39 @@
+name: Build Windows EXE
+
+# يشتغل هذا تلقائياً كل ما يصير رفع (push) لأي ملف بالمشروع،
+# أو يدوياً من تبويب Actions بالضغط على "Run workflow"
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+
+    steps:
+      - name: تنزيل ملفات المشروع
+        uses: actions/checkout@v4
+
+      - name: تثبيت Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: تثبيت ffmpeg
+        run: choco install ffmpeg -y
+
+      - name: تثبيت المكتبات المطلوبة
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: بناء ملف exe
+        run: |
+          pyinstaller --name "تحميل يوتيوب" --windowed --onedir --noconfirm youtube_downloader.py
+
+      - name: رفع ملف exe كمخرج (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: تحميل-يوتيوب-ويندوز
+          path: dist/تحميل يوتيوب/
