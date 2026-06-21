@@ -1,0 +1,5 @@
+yt-dlp
+customtkinter
+pyinstaller
+pillow
+win10toast
